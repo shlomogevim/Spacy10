@@ -21,13 +21,13 @@ class ThoughtsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
-            LayoutInflater.from(parent?.context).inflate(R.layout.thought_list_view, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.thought_list_view, parent, false)
         return ViewHolder(view, itemClick)
 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder?.bindThought(thoughts[position])
+        holder.bindThought(thoughts[position])
     }
 
     override fun getItemCount() = thoughts.count()

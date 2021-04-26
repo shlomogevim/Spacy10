@@ -16,11 +16,13 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.sg.jhony50.ThoughtsAdapter
 import com.sg.spacy10.R
+import com.sg.spacy10.databinding.ActivityMainBinding
 import com.sg.spacy10.model.Thought
 import com.sg.spacy10.utilities.*
-import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     lateinit var selectCategory: String
     lateinit var thoughtsAdapter: ThoughtsAdapter
     var thoughts = ArrayList<Thought>()
@@ -31,10 +33,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding= ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         auth= FirebaseAuth.getInstance()
         selectCategory = FUNNY
-        fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             var intent = Intent(this, AddThoughtActivity::class.java)
             startActivity(intent)
         }
@@ -43,9 +46,9 @@ class MainActivity : AppCompatActivity() {
             commentActivity.putExtra(DOCUMENT_KEY,thought.documentId)
             startActivity(commentActivity)
         }
-        thoughtListView.adapter = thoughtsAdapter
+        binding.thoughtListView.adapter = thoughtsAdapter
         val layoutManger = LinearLayoutManager(this)
-        thoughtListView.layoutManager = layoutManger
+        binding.thoughtListView.layoutManager = layoutManger
 
 
     }
@@ -86,19 +89,19 @@ class MainActivity : AppCompatActivity() {
     }
     fun updateUi() {
         if (auth.currentUser == null) {
-            mainCrazyBtn.isEnabled = false
-            mainPopularBtn.isEnabled = false
-            mainFunnyBtn.isEnabled = false
-            mainSeriousBtn.isEnabled = false
-            fab.isEnabled = false
+            binding.mainCrazyBtn.isEnabled = false
+            binding.mainPopularBtn.isEnabled = false
+            binding.mainFunnyBtn.isEnabled = false
+            binding.mainSeriousBtn.isEnabled = false
+            binding.fab.isEnabled = false
             thoughts.clear()
             thoughtsAdapter.notifyDataSetChanged()
         } else {
-            mainCrazyBtn.isEnabled = true
-            mainPopularBtn.isEnabled = true
-            mainFunnyBtn.isEnabled = true
-            mainSeriousBtn.isEnabled = true
-            fab.isEnabled = true
+            binding.mainCrazyBtn.isEnabled = true
+            binding.mainPopularBtn.isEnabled = true
+            binding.mainFunnyBtn.isEnabled = true
+            binding.mainSeriousBtn.isEnabled = true
+            binding.fab.isEnabled = true
             setListener()
         }
     }
@@ -150,7 +153,6 @@ class MainActivity : AppCompatActivity() {
                     name, timestamp, thoghtTxt, numLikes.toInt(),
                     numComments.toInt(), documentId
                 )
-
                 thoughts.add(newThought)
             }
             thoughtsAdapter.notifyDataSetChanged()
@@ -158,40 +160,40 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun mainFunnyOnClick(view: View) {
-        mainFunnyBtn.isChecked = true
-        mainSeriousBtn.isChecked = false
-        mainCrazyBtn.isChecked = false
-        mainPopularBtn.isChecked = false
+        binding.mainFunnyBtn.isChecked = true
+        binding.mainSeriousBtn.isChecked = false
+        binding.mainCrazyBtn.isChecked = false
+        binding.mainPopularBtn.isChecked = false
         selectCategory = FUNNY
         thoughtsListener.remove()
         setListener()
     }
 
     fun mainSeriousOnclicked(view: View) {
-        mainFunnyBtn.isChecked = false
-        mainSeriousBtn.isChecked = true
-        mainCrazyBtn.isChecked = false
-        mainPopularBtn.isChecked = false
+        binding.mainFunnyBtn.isChecked = false
+        binding.mainSeriousBtn.isChecked = true
+        binding.mainCrazyBtn.isChecked = false
+        binding.mainPopularBtn.isChecked = false
         selectCategory = SERIOUS
         thoughtsListener.remove()
         setListener()
     }
 
     fun mainCreazyOnclicked(view: View) {
-        mainFunnyBtn.isChecked = false
-        mainSeriousBtn.isChecked = false
-        mainCrazyBtn.isChecked = true
-        mainPopularBtn.isChecked = false
+        binding.mainFunnyBtn.isChecked = false
+        binding.mainSeriousBtn.isChecked = false
+        binding.mainCrazyBtn.isChecked = true
+        binding.mainPopularBtn.isChecked = false
         selectCategory = CRAZY
         thoughtsListener.remove()
         setListener()
     }
 
     fun mainPopularOnclicked(view: View) {
-        mainFunnyBtn.isChecked = false
-        mainSeriousBtn.isChecked = false
-        mainCrazyBtn.isChecked = false
-        mainPopularBtn.isChecked = true
+        binding.mainFunnyBtn.isChecked = false
+        binding.mainSeriousBtn.isChecked = false
+        binding.mainCrazyBtn.isChecked = false
+        binding.mainPopularBtn.isChecked = true
         selectCategory = POPULAR
         thoughtsListener.remove()
         setListener()

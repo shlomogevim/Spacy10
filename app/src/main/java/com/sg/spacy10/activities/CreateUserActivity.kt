@@ -26,9 +26,14 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     fun createCreateClicked(view: View) {
-        val email = binding.createEmailTxt.text.toString()
+       /* val email = binding.createEmailTxt.text.toString()
         val password = binding.cratePasswordText.text.toString()
-        val username = binding.createUsernameTxt.text.toString()
+        val username = binding.createUsernameTxt.text.toString()*/
+
+        val email="shlomo10@gmail.com"
+        val password="123456"
+        val username ="shlomo10"
+
         Log.i(TAG,"email=$email ,password=$password ,username=$username")
 
         auth.createUserWithEmailAndPassword(email, password)

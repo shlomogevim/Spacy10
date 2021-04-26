@@ -23,7 +23,9 @@ class LoginActivity : AppCompatActivity() {
     fun loginLoginClicked(view: View) {
         /*val email=loginEmailTxt.text.toString()
         val password=loginPasswordTxt.text.toString()*/
-        val email="shlomo10@gmail.com"
+        /*val email="shlomo10@gmail.com"
+        val password="123456"*/
+        val email="shlomo11@gmail.com"
         val password="123456"
         Log.i(TAG,"inside loginActivity1 email=$email,password=$password")
         auth.signInWithEmailAndPassword(email,password)

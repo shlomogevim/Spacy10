@@ -21,3 +21,4 @@ const val DATE_CREATED="dateCreated"
 const val COMMENTS_TXT="commentText"
 
 const val DOCUMENT_KEY="docId"
+const val USER_ID="userId"

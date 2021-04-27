@@ -3,12 +3,18 @@ package com.sg.spacy10.adaptersThoghtaAdapter.kt
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.sg.spacy10.R
+import com.sg.spacy10.interfaces.CommentOptionClickListener
 import com.sg.spacy10.model.Comment
 
-class CommentsAdapter(val comments: ArrayList<Comment>) :
+class CommentsAdapter(
+    private val comments: ArrayList<Comment>,
+    val commentOptionListener: CommentOptionClickListener
+) :
     RecyclerView.Adapter<CommentsAdapter.ViewHolder>() {
 
 
@@ -31,13 +37,20 @@ class CommentsAdapter(val comments: ArrayList<Comment>) :
         val username = itemView?.findViewById<TextView>(R.id.commentListUserName)
         val timestap = itemView?.findViewById<TextView>(R.id.commentListTimestap)
         val commentTxt = itemView?.findViewById<TextView>(R.id.commentListCommentText)
+        val optionImage = itemView?.findViewById<ImageView>(R.id.commentOptionImage)
 
 
         fun bindComment(comment: Comment) {
+            optionImage?.visibility = View.INVISIBLE
             username?.text = comment.username
             commentTxt?.text = comment.commentTxt
             timestap?.text = comment.timestamp?.toDate().toString()
-
+            if (FirebaseAuth.getInstance().currentUser?.uid == comment.userId) {
+                optionImage?.visibility = View.VISIBLE
+                optionImage?.setOnClickListener {
+                    commentOptionListener.OptionMenuClicked(comment)
+                }
+            }
         }
     }
 }

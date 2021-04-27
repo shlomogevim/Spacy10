@@ -15,11 +15,12 @@ import com.google.firebase.firestore.Query
 import com.sg.spacy10.R
 import com.sg.spacy10.adaptersThoghtaAdapter.kt.CommentsAdapter
 import com.sg.spacy10.databinding.ActivityCommentsBinding
+import com.sg.spacy10.interfaces.CommentOptionClickListener
 import com.sg.spacy10.model.Comment
 import com.sg.spacy10.utilities.*
 
 
-class CommentsActivity : AppCompatActivity() {
+class CommentsActivity : AppCompatActivity(),CommentOptionClickListener {
     lateinit var binding:ActivityCommentsBinding
     lateinit var thoughtDocumentId:String
     val comments = arrayListOf<Comment>()
@@ -31,7 +32,7 @@ class CommentsActivity : AppCompatActivity() {
         setContentView(binding.root)
         thoughtDocumentId=intent.getStringExtra(DOCUMENT_KEY)
 
-        commentsAdapter= CommentsAdapter(comments)
+        commentsAdapter= CommentsAdapter(comments,this)
         binding.commentsListview.adapter=commentsAdapter
         val layoutManager= LinearLayoutManager(this)
         binding.commentsListview.layoutManager=layoutManager
@@ -41,7 +42,7 @@ class CommentsActivity : AppCompatActivity() {
             .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, exception ->
                 if (exception!=null){
-                    Log.i(com.sg.spacy10.utilities.TAG,"Cannt retrive comments because :${exception.localizedMessage}")
+                    Log.i(TAG,"Cannt retrive comments because :${exception.localizedMessage}")
                 }
                 if (snapshot!=null){
                     comments.clear()
@@ -93,5 +94,9 @@ class CommentsActivity : AppCompatActivity() {
         if (inputManagar.isAcceptingText){
             inputManagar.hideSoftInputFromWindow(currentFocus?.windowToken,0)
         }
+    }
+
+    override fun OptionMenuClicked(comment: Comment) {
+        Log.e(TAG,comment.commentTxt)
     }
 }

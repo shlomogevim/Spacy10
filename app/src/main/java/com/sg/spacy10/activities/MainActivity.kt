@@ -17,11 +17,12 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.sg.jhony50.ThoughtsAdapter
 import com.sg.spacy10.R
 import com.sg.spacy10.databinding.ActivityMainBinding
+import com.sg.spacy10.interfaces.ThoughtOptionClickListener
 import com.sg.spacy10.model.Thought
 import com.sg.spacy10.utilities.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),ThoughtOptionClickListener {
     private lateinit var binding: ActivityMainBinding
     lateinit var selectCategory: String
     lateinit var thoughtsAdapter: ThoughtsAdapter
@@ -33,17 +34,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        auth= FirebaseAuth.getInstance()
+        auth = FirebaseAuth.getInstance()
         selectCategory = FUNNY
         binding.fab.setOnClickListener {
             var intent = Intent(this, AddThoughtActivity::class.java)
             startActivity(intent)
         }
-        thoughtsAdapter = ThoughtsAdapter(thoughts){thought ->
-            var commentActivity= Intent(this,CommentsActivity::class.java)
-            commentActivity.putExtra(DOCUMENT_KEY,thought.documentId)
+        thoughtsAdapter = ThoughtsAdapter(thoughts,this) { thought ->
+            var commentActivity = Intent(this, CommentsActivity::class.java)
+            commentActivity.putExtra(DOCUMENT_KEY, thought.documentId)
             startActivity(commentActivity)
         }
         binding.thoughtListView.adapter = thoughtsAdapter
@@ -57,11 +58,14 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         updateUi()
     }
-
+    override fun thoughtOptionMenuClicked(thought: Thought) {
+        Log.e(TAG,thought.thoughtTxt)
+    }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu,menu)
+        menuInflater.inflate(R.menu.menu, menu)
         return true
     }
+
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         val menuItem = menu.getItem(0)
         if (auth.currentUser == null) {
@@ -74,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onPrepareOptionsMenu(menu)
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_login) {
             if (auth.currentUser == null) {
@@ -87,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         }
         return false
     }
+
     fun updateUi() {
         if (auth.currentUser == null) {
             binding.mainCrazyBtn.isEnabled = false
@@ -105,6 +111,7 @@ class MainActivity : AppCompatActivity() {
             setListener()
         }
     }
+
     fun setListener() {
         if (selectCategory == POPULAR) {
             thoughtsListener = thoughtCollectionRef
@@ -149,9 +156,11 @@ class MainActivity : AppCompatActivity() {
                 Log.i("message", "numLikes=$numLikes")
                 val numComments = data[NUM_COMMENTS] as Long
                 val documentId = document.id
+
+                val userId = data[USER_ID] as String
                 val newThought = Thought(
                     name, timestamp, thoghtTxt, numLikes.toInt(),
-                    numComments.toInt(), documentId
+                    numComments.toInt(), documentId, userId
                 )
                 thoughts.add(newThought)
             }
@@ -198,4 +207,6 @@ class MainActivity : AppCompatActivity() {
         thoughtsListener.remove()
         setListener()
     }
+
+
 }

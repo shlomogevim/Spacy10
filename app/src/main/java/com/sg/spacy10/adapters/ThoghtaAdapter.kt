@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.sg.spacy10.R
+import com.sg.spacy10.interfaces.ThoughtOptionClickListener
 import com.sg.spacy10.model.Thought
 import com.sg.spacy10.utilities.NUM_LIKES
 import com.sg.spacy10.utilities.THOUGHTS_REF
@@ -15,6 +17,7 @@ import com.sg.spacy10.utilities.THOUGHTS_REF
 
 class ThoughtsAdapter(
     private val thoughts: ArrayList<Thought>,
+    val thoughtOptionListener:ThoughtOptionClickListener,
     private val itemClick: (Thought) -> Unit
 ) :
     RecyclerView.Adapter<ThoughtsAdapter.ViewHolder>() {
@@ -41,19 +44,28 @@ class ThoughtsAdapter(
         private val numLikes = itemView?.findViewById<TextView>(R.id.listViewNumLikes)
         private val likesImage = itemView?.findViewById<ImageView>(R.id.listViewLikesImage)
         private val numComments = itemView?.findViewById<TextView>(R.id.numCommentsLabel)
+        private val optionImage = itemView?.findViewById<ImageView>(R.id.thoughtOptionImage)
 
 
         fun bindThought(thought: Thought) {
+            optionImage?.visibility=View.INVISIBLE
             username?.text = thought.userName
             thoughtsText?.text = thought.thoughtTxt
             numLikes?.text = thought.numLikes.toString()
             numComments?.text = thought.numComments.toString()
-            // timestamp?.text = thought.timestamp?.toDate().toString()
+             timestamp?.text = thought.timestamp?.toDate().toString()
             itemView.setOnClickListener { itemClick(thought) }
             likesImage?.setOnClickListener {
                 FirebaseFirestore.getInstance().collection(THOUGHTS_REF)
                     .document(thought.documentId)
                     .update(NUM_LIKES, thought.numLikes + 1)
+            }
+            if (FirebaseAuth.getInstance().currentUser.uid== thought.userId){
+                optionImage?.visibility=View.VISIBLE
+                optionImage?.setOnClickListener {
+                    thoughtOptionListener.thoughtOptionMenuClicked(thought)
+                }
+
             }
         }
     }

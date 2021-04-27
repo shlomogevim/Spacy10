@@ -22,12 +22,12 @@
         android:id="@+id/listViewTimestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:textColor="@color/colorPrimary"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/thoughtOptionImage"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/listViewUsername"
         app:layout_constraintStart_toEndOf="@+id/listViewUsername"
-        app:layout_constraintTop_toTopOf="@+id/thoughtOptionImage"
+        app:layout_constraintTop_toTopOf="@+id/listViewUsername"
         tools:text="Oct 11, 9:06 PM" />
 
     <TextView
@@ -35,7 +35,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,8 +92,9 @@
         android:id="@+id/thoughtOptionImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ellipsis"
-        tools:layout_editor_absoluteY="14dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ellipsis" />
 </androidx.constraintlayout.widget.ConstraintLayout>

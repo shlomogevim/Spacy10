@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -62,6 +64,44 @@ class CommentsActivity : AppCompatActivity(),CommentOptionClickListener {
 
     }
 
+    override fun OptionMenuClicked(comment: Comment) {
+        // Log.e(TAG,comment.commentTxt)
+        val buider = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.options_menu, null)
+        val deleteBtn = dialogView.findViewById<Button>(R.id.optionDeleteBtn)
+        val editBtn = dialogView.findViewById<Button>(R.id.optionEditBtn)
+        buider.setView(dialogView)
+            .setNegativeButton("Cancel") { _, _ -> }
+        val ad = buider.show()
+        deleteBtn.setOnClickListener {
+            val commentRef =
+                FirebaseFirestore.getInstance().collection(THOUGHTS_REF).document(thoughtDocumentId)
+                    .collection(COMMENTS_REF).document(comment.documentId)
+            /*thoughtRef.delete()
+                .addOnSuccessListener {
+                    ad.dismiss()
+                }.addOnFailureListener {
+                    Log.e(TAG,"cannot delet comment because:${it.localizedMessage}")
+                }*/
+            val thoughtRef =
+                FirebaseFirestore.getInstance().collection(THOUGHTS_REF).document(thoughtDocumentId)
+            FirebaseFirestore.getInstance().runTransaction { transaction ->
+                val thought = transaction.get(thoughtRef)
+                val numComments = thought.getLong(NUM_COMMENTS)?.minus(1)
+                transaction.update(thoughtRef, NUM_COMMENTS, numComments)
+                transaction.delete(commentRef)
+            }.addOnSuccessListener {
+                ad.dismiss()
+            }.addOnFailureListener {
+                Log.e(TAG,"cannot delet comment because:${it.localizedMessage}")
+            }
+        }
+
+        editBtn.setOnClickListener {
+        }
+
+    }
+
     fun addCommentClick(view: View) {
         val commentText = binding.enterCommentText.text.toString()
 
@@ -96,7 +136,5 @@ class CommentsActivity : AppCompatActivity(),CommentOptionClickListener {
         }
     }
 
-    override fun OptionMenuClicked(comment: Comment) {
-        Log.e(TAG,comment.commentTxt)
-    }
+
 }

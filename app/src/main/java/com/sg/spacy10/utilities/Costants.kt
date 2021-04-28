@@ -22,3 +22,7 @@ const val COMMENTS_TXT="commentText"
 
 const val DOCUMENT_KEY="docId"
 const val USER_ID="userId"
+
+const val THOUGHT_DOC_ID_EXTRA="thoughtDocId"
+const val COMMENT_DOC_ID_EXTRA="commentDocId"
+const val COMMENT_TXT_EXTRA="commentTextExtra"

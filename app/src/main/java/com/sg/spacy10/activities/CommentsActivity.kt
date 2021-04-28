@@ -1,6 +1,7 @@
 package com.sg.spacy10.activities
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -98,6 +99,12 @@ class CommentsActivity : AppCompatActivity(),CommentOptionClickListener {
         }
 
         editBtn.setOnClickListener {
+            val intentUpdate=Intent(this,UpdateCommentActivity::class.java)
+           intentUpdate.putExtra(THOUGHT_DOC_ID_EXTRA,thoughtDocumentId)
+           intentUpdate.putExtra(COMMENT_DOC_ID_EXTRA,comment.documentId)
+          intentUpdate.putExtra(COMMENT_TXT_EXTRA,comment.commentTxt)
+            ad.dismiss()
+            startActivity(intentUpdate)
         }
 
     }

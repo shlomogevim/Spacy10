@@ -1,28 +1,30 @@
 package com.sg.spacy10.activities
 
 import android.content.Intent
+import android.nfc.Tag
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import com.sg.jhony50.ThoughtsAdapter
 import com.sg.spacy10.R
 import com.sg.spacy10.databinding.ActivityMainBinding
 import com.sg.spacy10.interfaces.ThoughtOptionClickListener
 import com.sg.spacy10.model.Thought
 import com.sg.spacy10.utilities.*
+import kotlin.concurrent.thread
 
 
-class MainActivity : AppCompatActivity(),ThoughtOptionClickListener {
+
+class MainActivity : AppCompatActivity(), ThoughtOptionClickListener {
     private lateinit var binding: ActivityMainBinding
     lateinit var selectCategory: String
     lateinit var thoughtsAdapter: ThoughtsAdapter
@@ -42,7 +44,7 @@ class MainActivity : AppCompatActivity(),ThoughtOptionClickListener {
             var intent = Intent(this, AddThoughtActivity::class.java)
             startActivity(intent)
         }
-        thoughtsAdapter = ThoughtsAdapter(thoughts,this) { thought ->
+        thoughtsAdapter = ThoughtsAdapter(thoughts, this) { thought ->
             var commentActivity = Intent(this, CommentsActivity::class.java)
             commentActivity.putExtra(DOCUMENT_KEY, thought.documentId)
             startActivity(commentActivity)
@@ -58,9 +60,68 @@ class MainActivity : AppCompatActivity(),ThoughtOptionClickListener {
         super.onResume()
         updateUi()
     }
+
     override fun thoughtOptionMenuClicked(thought: Thought) {
-        Log.e(TAG,thought.thoughtTxt)
+        Log.e(TAG, thought.thoughtTxt)
+        val builder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.options_menu, null)
+        val deleteBtn = dialogView.findViewById<Button>(R.id.optionDeleteBtn)
+        val editBtn = dialogView.findViewById<Button>(R.id.optionEditBtn)
+        builder.setView(dialogView)
+            .setNegativeButton("Cancel") { _, _ -> }
+        val ad = builder.show()
+        deleteBtn.setOnClickListener {
+            val thoughtRef = FirebaseFirestore.getInstance().collection(THOUGHTS_REF)
+                .document(thought.documentId)
+            val collectionRef=FirebaseFirestore.getInstance().collection(THOUGHTS_REF)
+                .document(thought.documentId).collection(COMMENTS_REF)
+           /* deleteCollection(collectionRef,thought){sucsses->
+                Log.e(TAG,"sucsses is : $sucsses")
+                if (sucsses){*/
+                    thoughtRef.delete()
+                        .addOnSuccessListener {
+                            ad.dismiss()
+                        }.addOnFailureListener {
+                            Log.e(TAG, "cannot delete thought because: ${it.localizedMessage}")
+                     //   }
+              //  }
+
+            }
+
+
+
+
+        }
+
+        editBtn.setOnClickListener {
+
+        }
     }
+    fun deleteCollection(
+        collection: CollectionReference,
+        thought: Thought,
+        complete: (Boolean) -> Unit) {
+        collection.get().addOnSuccessListener { snapshot->
+            thread {
+                val batch=FirebaseFirestore.getInstance().batch()
+                for (document in snapshot){
+                    val docRef=FirebaseFirestore.getInstance().collection(THOUGHTS_REF).document(thought.documentId)
+                        .collection(COMMENTS_REF).document(document.id)
+                    batch.delete(docRef)
+                }
+                batch.commit().addOnSuccessListener {
+
+                }.addOnFailureListener {
+                    complete(true)
+                }.addOnFailureListener {
+                    Log.e(TAG,"cannot delete subCollection because :${it.localizedMessage}")
+                }
+            }
+        }.addOnFailureListener {
+            Log.e(TAG,"cannot retrive documents because :${it.localizedMessage}")
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         return true

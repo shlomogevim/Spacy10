@@ -23,7 +23,6 @@ import com.sg.spacy10.utilities.*
 import kotlin.concurrent.thread
 
 
-
 class MainActivity : AppCompatActivity(), ThoughtOptionClickListener {
     private lateinit var binding: ActivityMainBinding
     lateinit var selectCategory: String
@@ -53,7 +52,11 @@ class MainActivity : AppCompatActivity(), ThoughtOptionClickListener {
         val layoutManger = LinearLayoutManager(this)
         binding.thoughtListView.layoutManager = layoutManger
 
+        val intentLogin = Intent(this, LoginActivity::class.java)
+        startActivity(intentLogin)
 
+        val name = auth.currentUser.displayName
+        //Log.e(TAG,"user is : $name")
     }
 
     override fun onResume() {
@@ -73,22 +76,20 @@ class MainActivity : AppCompatActivity(), ThoughtOptionClickListener {
         deleteBtn.setOnClickListener {
             val thoughtRef = FirebaseFirestore.getInstance().collection(THOUGHTS_REF)
                 .document(thought.documentId)
-            val collectionRef=FirebaseFirestore.getInstance().collection(THOUGHTS_REF)
+            val collectionRef = FirebaseFirestore.getInstance().collection(THOUGHTS_REF)
                 .document(thought.documentId).collection(COMMENTS_REF)
-           /* deleteCollection(collectionRef,thought){sucsses->
-                Log.e(TAG,"sucsses is : $sucsses")
-                if (sucsses){*/
-                    thoughtRef.delete()
-                        .addOnSuccessListener {
-                            ad.dismiss()
-                        }.addOnFailureListener {
-                            Log.e(TAG, "cannot delete thought because: ${it.localizedMessage}")
-                     //   }
-              //  }
+            /* deleteCollection(collectionRef,thought){sucsses->
+                 Log.e(TAG,"sucsses is : $sucsses")
+                 if (sucsses){*/
+            thoughtRef.delete()
+                .addOnSuccessListener {
+                    ad.dismiss()
+                }.addOnFailureListener {
+                    Log.e(TAG, "cannot delete thought because: ${it.localizedMessage}")
+                    //   }
+                    //  }
 
-            }
-
-
+                }
 
 
         }
@@ -97,30 +98,7 @@ class MainActivity : AppCompatActivity(), ThoughtOptionClickListener {
 
         }
     }
-    fun deleteCollection(
-        collection: CollectionReference,
-        thought: Thought,
-        complete: (Boolean) -> Unit) {
-        collection.get().addOnSuccessListener { snapshot->
-            thread {
-                val batch=FirebaseFirestore.getInstance().batch()
-                for (document in snapshot){
-                    val docRef=FirebaseFirestore.getInstance().collection(THOUGHTS_REF).document(thought.documentId)
-                        .collection(COMMENTS_REF).document(document.id)
-                    batch.delete(docRef)
-                }
-                batch.commit().addOnSuccessListener {
 
-                }.addOnFailureListener {
-                    complete(true)
-                }.addOnFailureListener {
-                    Log.e(TAG,"cannot delete subCollection because :${it.localizedMessage}")
-                }
-            }
-        }.addOnFailureListener {
-            Log.e(TAG,"cannot retrive documents because :${it.localizedMessage}")
-        }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
@@ -161,6 +139,7 @@ class MainActivity : AppCompatActivity(), ThoughtOptionClickListener {
             binding.mainFunnyBtn.isEnabled = false
             binding.mainSeriousBtn.isEnabled = false
             binding.fab.isEnabled = false
+            binding.myToolbar.title="ברוך הבא אלמוני פלמוני ..."
             thoughts.clear()
             thoughtsAdapter.notifyDataSetChanged()
         } else {
@@ -169,6 +148,10 @@ class MainActivity : AppCompatActivity(), ThoughtOptionClickListener {
             binding.mainFunnyBtn.isEnabled = true
             binding.mainSeriousBtn.isEnabled = true
             binding.fab.isEnabled = true
+            val name = auth.currentUser.displayName
+            val welcome="ברוך הבא"
+            val ten="תן בפוסטים"
+            binding.myToolbar.title="$welcome $name, $ten     "
             setListener()
         }
     }
@@ -269,5 +252,31 @@ class MainActivity : AppCompatActivity(), ThoughtOptionClickListener {
         setListener()
     }
 
+    fun deleteCollection(
+        collection: CollectionReference,
+        thought: Thought,
+        complete: (Boolean) -> Unit
+    ) {
+        collection.get().addOnSuccessListener { snapshot ->
+            thread {
+                val batch = FirebaseFirestore.getInstance().batch()
+                for (document in snapshot) {
+                    val docRef = FirebaseFirestore.getInstance().collection(THOUGHTS_REF)
+                        .document(thought.documentId)
+                        .collection(COMMENTS_REF).document(document.id)
+                    batch.delete(docRef)
+                }
+                batch.commit().addOnSuccessListener {
+
+                }.addOnFailureListener {
+                    complete(true)
+                }.addOnFailureListener {
+                    Log.e(TAG, "cannot delete subCollection because :${it.localizedMessage}")
+                }
+            }
+        }.addOnFailureListener {
+            Log.e(TAG, "cannot retrive documents because :${it.localizedMessage}")
+        }
+    }
 
 }

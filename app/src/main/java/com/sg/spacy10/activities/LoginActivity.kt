@@ -20,13 +20,21 @@ class LoginActivity : AppCompatActivity() {
         auth= FirebaseAuth.getInstance()
     }
 
+
     fun loginLoginClicked(view: View) {
         /*val email=loginEmailTxt.text.toString()
         val password=loginPasswordTxt.text.toString()*/
-        val email="shlomo10@gmail.com"
-        val password="123456"
+        /*val email="shlomo10@gmail.com"
+        val password="123456"*/
         /*val email="shlomo11@gmail.com"
         val password="123456"*/
+        val username=binding.loginEmailTxt.text.toString()
+        val email="${username}@gmail.com"
+        var password=binding.loginPasswordTxt.text.toString()
+        password="${password}11111"
+
+
+
         Log.i(TAG,"inside loginActivity1 email=$email,password=$password")
         auth.signInWithEmailAndPassword(email,password)
             .addOnSuccessListener {

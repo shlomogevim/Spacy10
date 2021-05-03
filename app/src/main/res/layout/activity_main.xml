@@ -6,6 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".Activities.MainActivity">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/my_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:title="ברוך הבא"
+                app:titleTextColor="@color/white" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -22,19 +49,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/category_toggle"
         android:checked="true"
         android:onClick="mainFunnyOnClick"
         android:textColor="@color/white"
-        android:textOff="funny"
-        android:textOn="funny"
+        android:textOff="מצחיק"
+        android:textOn="מצחיק"
         android:textSize="12sp"
         app:layout_constraintEnd_toStartOf="@+id/mainSeriousBtn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout3" />
 
     <ToggleButton
         android:id="@+id/mainSeriousBtn"
@@ -43,8 +70,8 @@
         android:background="@drawable/category_toggle"
         android:onClick="mainSeriousOnclicked"
         android:textColor="@color/white"
-        android:textOff="serios"
-        android:textOn="serious"
+        android:textOff="רציני"
+        android:textOn="רציני"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/mainFunnyBtn"
         app:layout_constraintEnd_toStartOf="@+id/mainCrazyBtn"
@@ -60,8 +87,8 @@
         android:background="@drawable/category_toggle"
         android:onClick="mainCreazyOnclicked"
         android:textColor="@color/white"
-        android:textOff="crazy"
-        android:textOn="crazy"
+        android:textOff="פרוע"
+        android:textOn="פרוע"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/mainSeriousBtn"
         app:layout_constraintEnd_toStartOf="@+id/mainPopularBtn"
@@ -78,8 +105,8 @@
         android:background="@drawable/category_toggle"
         android:onClick="mainPopularOnclicked"
         android:textColor="@color/white"
-        android:textOff="popular"
-        android:textOn="popular"
+        android:textOff="פופולרי"
+        android:textOn="פופולרי"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/mainCrazyBtn"
         app:layout_constraintEnd_toEndOf="parent"

@@ -33,9 +33,14 @@ class CreateUserActivity : AppCompatActivity() {
         /*val email="shlomo10@gmail.com"
         val password="123456"
         val username ="shlomo10"*/
-        val email="shlomo11@gmail.com"
+       /* val email="shlomo11@gmail.com"
         val password="123456"
-        val username ="shlomo11"
+        val username ="shlomo11"*/
+
+        var password = binding.cratePasswordText.text.toString()
+        password="${password}11111"
+        val username = binding.createUsernameTxt.text.toString()
+        val email="${username}@gmail.com"
 
         Log.i(TAG,"email=$email ,password=$password ,username=$username")
 

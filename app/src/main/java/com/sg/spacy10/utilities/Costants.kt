@@ -26,3 +26,6 @@ const val USER_ID="userId"
 const val THOUGHT_DOC_ID_EXTRA="thoughtDocId"
 const val COMMENT_DOC_ID_EXTRA="commentDocId"
 const val COMMENT_TXT_EXTRA="commentTextExtra"
+
+const val ENTRY="entry"
+const val FIRST_ENTERY="firstEntry"
